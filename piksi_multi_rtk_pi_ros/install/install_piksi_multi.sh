@@ -8,14 +8,14 @@ echo "Installing SBP library for Piksi Multi."
 
 sudo apt install python-pip
 sudo pip install sbp==$REPO_TAG
-sudo pip install llvmlite --upgrade
+# sudo pip install llvmlite --upgrade
 
 echo "SBP Library Installed"
 
 echo "Installing ROS node requirements."
 sudo pip install numpy-quaternion
-sudo pip install scipy
-sudo pip install pyproj
+#sudo pip install scipy
+#sudo pip install pyproj
 
 #---------------- Dialout Group ----------------
 if id -nG "$USER" | grep -qw dialout; then

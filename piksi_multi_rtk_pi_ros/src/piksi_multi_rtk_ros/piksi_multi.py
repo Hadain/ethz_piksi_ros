@@ -9,7 +9,7 @@
 
 import rospy
 import math
-import quaternion
+### import quaternion
 import numpy as np
 import datetime, time, leapseconds
 from collections import deque
@@ -26,7 +26,7 @@ from piksi_rtk_msgs.msg import (AgeOfCorrections, BaselineEcef, BaselineHeading,
 from piksi_rtk_msgs.srv import *
 from geometry_msgs.msg import (PoseWithCovarianceStamped, PointStamped, PoseWithCovariance, Point, TransformStamped,
                                Transform)
-from visualization_msgs.msg import Marker
+### from visualization_msgs.msg import Marker
 # Import Piksi SBP library
 from sbp.client.drivers.pyserial_driver import PySerialDriver
 from sbp.client.drivers.network_drivers import TCPDriver
@@ -354,8 +354,8 @@ class PiksiMulti:
             publishers['vel_ecef_cov'] = rospy.Publisher(rospy.get_name() + '/vel_ecef_cov', VelocityWithCovarianceStamped, queue_size=10)
             publishers['baseline_ned_cov'] = rospy.Publisher(rospy.get_name() + '/baseline_ned_cov', PositionWithCovarianceStamped, queue_size=10)
 
-            publishers['pos_ecef_cov_viz'] = rospy.Publisher(rospy.get_name() + '/pos_ecef_cov_viz', Marker, queue_size=10)
-            publishers['baseline_ned_cov_viz'] = rospy.Publisher(rospy.get_name() + '/baseline_ned_cov_viz', Marker, queue_size=10)
+            ### publishers['pos_ecef_cov_viz'] = rospy.Publisher(rospy.get_name() + '/pos_ecef_cov_viz', Marker, queue_size=10)
+            ### publishers['baseline_ned_cov_viz'] = rospy.Publisher(rospy.get_name() + '/baseline_ned_cov_viz', Marker, queue_size=10)
 
         publishers['rtk_fix'] = rospy.Publisher(rospy.get_name() + '/navsatfix_rtk_fix',
                                                 NavSatFix, queue_size=10)
@@ -908,38 +908,6 @@ class PiksiMulti:
 
             self.publishers['baseline_ned_cov'].publish(baseline_msg)
 
-        if self.publishers['baseline_ned_cov_viz'].get_num_connections() > 0:
-            # https://answers.ros.org/question/11081/plot-a-gaussian-3d-representation-with-markers-in-rviz/
-            marker = Marker()
-            marker.header.stamp = stamp
-            marker.header.frame_id = self.base_ned_frame
-            marker.type = marker.SPHERE
-            marker.action = marker.ADD
-
-            cov = np.matrix([[cov_h_h, 0.0, 0.0],
-                             [0.0, cov_h_h, 0.0],
-                             [0.0, 0.0, cov_v_v]])
-
-            (eig_values, eig_vectors) = np.linalg.eig(cov)
-
-            R = eig_vectors.transpose()
-            q = quaternion.from_rotation_matrix(R)
-
-            marker.pose.orientation.x = q.x
-            marker.pose.orientation.y = q.y
-            marker.pose.orientation.z = q.z
-            marker.pose.orientation.w = q.w
-
-            marker.scale.x = math.sqrt(eig_values[0])
-            marker.scale.y = math.sqrt(eig_values[1])
-            marker.scale.z = math.sqrt(eig_values[2])
-
-            marker.pose.position.x = x
-            marker.pose.position.y = y
-            marker.pose.position.z = z
-
-            self.publishers['baseline_ned_cov_viz'].publish(marker)
-
     def cb_sbp_pos_ecef_cov(self, msg_raw, **metadata):
         if self.publishers['pos_ecef_cov'].get_num_connections() == 0 \
         and self.publishers['pos_ecef_cov_viz'].get_num_connections() == 0:
@@ -967,38 +935,6 @@ class PiksiMulti:
                                             msg.cov_x_z, msg.cov_y_z, msg.cov_z_z]
 
             self.publishers['pos_ecef_cov'].publish(ecef_msg)
-
-        if self.publishers['pos_ecef_cov_viz'].get_num_connections() > 0:
-            # https://answers.ros.org/question/11081/plot-a-gaussian-3d-representation-with-markers-in-rviz/
-            marker = Marker()
-            marker.header.stamp = stamp
-            marker.header.frame_id = self.ecef_frame
-            marker.type = marker.SPHERE
-            marker.action = marker.ADD
-
-            cov = np.matrix([[msg.cov_x_x, msg.cov_x_y, msg.cov_x_z],
-                             [msg.cov_x_y, msg.cov_y_y, msg.cov_y_z],
-                             [msg.cov_x_z, msg.cov_y_z, msg.cov_z_z]])
-
-            (eig_values, eig_vectors) = np.linalg.eig(cov)
-
-            R = eig_vectors.transpose()
-            q = quaternion.from_rotation_matrix(R)
-
-            marker.pose.orientation.x = q.x
-            marker.pose.orientation.y = q.y
-            marker.pose.orientation.z = q.z
-            marker.pose.orientation.w = q.w
-
-            marker.scale.x = math.sqrt(eig_values[0])
-            marker.scale.y = math.sqrt(eig_values[1])
-            marker.scale.z = math.sqrt(eig_values[2])
-
-            marker.pose.position.x = msg.x
-            marker.pose.position.x = msg.y
-            marker.pose.position.x = msg.z
-
-            self.publishers['pos_ecef_cov_viz'].publish(marker)
 
     def cb_sbp_vel_ned_cov(self, msg_raw, **metadata):
         if self.publishers['vel_ned_cov'].get_num_connections() == 0:
