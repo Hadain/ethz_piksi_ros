@@ -314,9 +314,9 @@ class GeodeticSurvey:
         
     def rosparam_enu_origin_position(self, lat0, lon0, alt0):
         # Current ENU origin to rosparam
-        rospy.set_param("surveyed_lat", lat0)
-        rospy.set_param("surveyed_lon", lon0)
-        rospy.set_param("surveyed_alt", (alt0 - self.height_base_station_from_ground))
+        rospy.set_param("\surveyed_lat", lat0)
+        rospy.set_param("\surveyed_lon", lon0)
+        rospy.set_param("\surveyed_alt", (alt0 - self.height_base_station_from_ground))
         rospy.loginfo("ENU origin saved in rosparam as surveyed_xxx")
         
 
