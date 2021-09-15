@@ -204,6 +204,7 @@ class GeodeticSurvey:
                         float(read_alt0_value), alt0, rel_tol=self.kRelativeTolleranceGeodeticComparison):
                         everything_ok = True
                         self.log_surveyed_position(lat0, lon0, alt0)
+                        self.rosparam_enu_origin_position(lat0, lon0, alt0)
 
                         # Make sure Piksi is properly configured to act as base station.
                         read_surveyed_broadcast, read_surveyed_broadcast_value = self.read_settings_from_piksi(
